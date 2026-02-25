@@ -1,0 +1,57 @@
+@startuml
+title Integration eines FHIR-SDC Questionnaires
+
+actor User
+participant "KIS (EHR System)" as KIS
+participant "FHIR Server (SDC-fähig)" as FHIR
+
+== Patient öffnen ==
+User -> KIS : Patient auswählen
+note right of KIS
+Der Patient ist im KIS bereits vorhanden.
+Ein zusätzlicher GET-Aufruf ist optional.
+end note
+
+== Questionnaire starten ==
+KIS -> FHIR : POST /Questionnaire/eekp-geburt/$populate
+
+note right of FHIR
+Was passiert hier?
+
+• Das KIS übergibt die Patient-ID
+  (und optional die Encounter-ID)
+
+• Der FHIR-Server erzeugt daraus
+  automatisch eine vorbefüllte
+  QuestionnaireResponse
+
+• Bereits bekannte Daten
+  (z.B. Name, Geburtsdatum)
+  werden ins Formular übernommen
+end note
+
+FHIR --> KIS : 200 QuestionnaireResponse (vorbefüllt)
+
+== Formular ausfüllen ==
+KIS -> User : Formular anzeigen
+User -> KIS : Formular absenden
+
+== Response speichern ==
+KIS -> FHIR : POST /QuestionnaireResponse
+
+note right of FHIR
+Der Server prüft:
+• Sind alle Pflichtfelder vorhanden?
+• Stimmen die Datentypen?
+• Passt die Response zum Questionnaire?
+
+Danach wird sie gespeichert.
+end note
+
+FHIR --> KIS : 201 Created
+
+== Daten wieder abrufen ==
+KIS -> FHIR : GET /QuestionnaireResponse?subject=Patient/{id}
+FHIR --> KIS : 200 QuestionnaireResponse
+
+@enduml

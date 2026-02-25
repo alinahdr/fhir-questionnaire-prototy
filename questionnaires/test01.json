@@ -1,0 +1,52 @@
+{
+  "resourceType": "Questionnaire",
+  "url": "http://example.org/fhir/Questionnaire/demo-questionnaire",
+  "status": "active",
+
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueId": "patient"
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        }
+      ]
+    }
+  ],
+
+  "item": [
+    {
+      "linkId": "firstname",
+      "type": "string",
+      "text": "Firstname",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%patient.name.first().given.first()"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lastname",
+      "type": "string",
+      "text": "Lastname",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%patient.name.first().family"
+          }
+        }
+      ]
+    }
+  ]
+}

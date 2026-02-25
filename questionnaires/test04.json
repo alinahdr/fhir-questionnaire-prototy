@@ -1,0 +1,65 @@
+{
+  "resourceType": "Questionnaire",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/4.0/StructureDefinition/Questionnaire"
+    ]
+  },
+  "url": "http://example.org/fhir/Questionnaire/demo-questionnaire",
+  "status": "active",
+  "item": [
+    {
+      "type": "string",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "Patient.name.first().given.first()"
+          }
+        }
+      ],
+      "linkId": "firstname",
+      "text": "Firstname"
+    },
+    {
+      "linkId": "lastname",
+      "type": "string",
+      "text": "Lastname",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "Patient.name.first().family"
+          }
+        }
+      ]
+    },
+    {
+      "type": "date",
+      "linkId": "birthdate",
+      "text": "Birthdate"
+    },
+    {
+      "type": "integer",
+      "linkId": "svs_numb",
+      "text": "SVS Nummer"
+    },
+    {
+      "type": "string",
+      "linkId": "738319030847",
+      "text": "Adresse"
+    },
+    {
+      "type": "string",
+      "linkId": "307979332648",
+      "text": "Ort"
+    },
+    {
+      "type": "string",
+      "linkId": "191853353480",
+      "text": "PLZ"
+    }
+  ]
+}

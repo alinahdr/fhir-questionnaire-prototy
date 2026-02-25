@@ -1,0 +1,46 @@
+{
+  "resourceType": "Questionnaire",
+  "url": "http://example.org/fhir/Questionnaire/demo-questionnaire",
+  "status": "active",
+  "item": [
+    {
+      "linkId": "firstname",
+      "type": "string",
+      "text": "Firstname",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "Patient.name.first().given.first()"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "lastname",
+      "type": "string",
+      "text": "Lastname",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "Patient.name.first().family"
+          }
+
+        }
+      ]
+    },
+     {
+      "type": "date",
+      "linkId": "birthdate",
+      "text": "Birthdate"
+    },
+    {
+      "type": "integer",
+      "linkId": "svs_numb",
+      "text": "SVS Nummer"
+    }
+  ]
+}
