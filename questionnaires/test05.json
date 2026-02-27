@@ -1,0 +1,36 @@
+{
+  "resourceType": "Questionnaire",
+  "url": "http://example.org/fhir/Questionnaire/demo-questionnaire-coded",
+  "status": "active",
+  "item": [
+    {
+      "linkId": "firstname",
+      "type": "string",
+      "text": "Firstname",
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+        "valueExpression": {
+          "language": "text/fhirpath",
+          "expression": "Patient.name.first().given.first()"
+        }
+      }]
+    },
+    {
+      "linkId": "lastname",
+      "type": "string",
+      "text": "Lastname",
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+        "valueExpression": {
+          "language": "text/fhirpath",
+          "expression": "Patient.name.first().family"
+        }
+      }]
+    },
+    {
+      "linkId": "kategorie_code",
+      "type": "string",
+      "text": "Kategorie (Code 1-6)"
+    }
+  ]
+}

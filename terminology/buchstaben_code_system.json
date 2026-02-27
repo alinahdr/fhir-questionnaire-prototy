@@ -1,0 +1,19 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "buchstaben-cs",
+  "url": "http://example.org/fhir/CodeSystem/buchstaben",
+  "version": "1.0",
+  "name": "BuchstabenCodeSystem",
+  "title": "Buchstaben Katalog A-F",
+  "status": "active",
+  "description": "Ziel-Katalog mit Buchstaben A-F",
+  "content": "complete",
+  "concept": [
+    { "code": "A", "display": "Alpha" },
+    { "code": "B", "display": "Beta" },
+    { "code": "C", "display": "Charlie" },
+    { "code": "D", "display": "Delta" },
+    { "code": "E", "display": "Echo" },
+    { "code": "F", "display": "Foxtrot" }
+  ]
+}

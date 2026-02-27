@@ -1,0 +1,50 @@
+{
+  "resourceType": "ConceptMap",
+  "id": "nummer-buchstabe-cm",
+  "url": "http://example.org/fhir/ConceptMap/nummer-buchstabe",
+  "version": "1.0",
+  "name": "NummerBuchstabeConceptMap",
+  "title": "Mapping: Nummer → Buchstabe",
+  "status": "active",
+  "description": "Mapped numerische Codes (1-6) auf Buchstaben (A-F)",
+  "sourceUri": "http://example.org/fhir/ValueSet/nummer-buchstabe",
+  "targetUri": "http://example.org/fhir/ValueSet/buchstaben-vs",
+  "group": [
+    {
+      "source": "http://example.org/fhir/CodeSystem/nummer-buchstabe",
+      "target": "http://example.org/fhir/CodeSystem/buchstaben",
+      "element": [
+        {
+          "code": "1",
+          "display": "Eins",
+          "target": [{ "code": "A", "display": "Alpha", "equivalence": "equivalent" }]
+        },
+        {
+          "code": "2",
+          "display": "Zwei",
+          "target": [{ "code": "B", "display": "Beta", "equivalence": "equivalent" }]
+        },
+        {
+          "code": "3",
+          "display": "Drei",
+          "target": [{ "code": "C", "display": "Charlie", "equivalence": "equivalent" }]
+        },
+        {
+          "code": "4",
+          "display": "Vier",
+          "target": [{ "code": "D", "display": "Delta", "equivalence": "equivalent" }]
+        },
+        {
+          "code": "5",
+          "display": "Fünf",
+          "target": [{ "code": "E", "display": "Echo", "equivalence": "equivalent" }]
+        },
+        {
+          "code": "6",
+          "display": "Sechs",
+          "target": [{ "code": "F", "display": "Foxtrot", "equivalence": "equivalent" }]
+        }
+      ]
+    }
+  ]
+}

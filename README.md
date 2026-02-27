@@ -85,20 +85,26 @@ Questionnaire/
 │
 ├── README.md                     # Diese Dokumentation
 │
-├── app/                          # Haupt-Anwendung
-│   ├── _web.py                   # Flask Web-App (Browser-Oberfläche)
-│   └── main.py                   # Terminal-Version desselben Workflows
+├── app/                          # Haupt-Anwendung (Web-App)
+│   ├── _web.py                   # Flask Web-App – nur Routen & HTML
+│   ├── fhir_client.py            # Alle FHIR HTTP-Aufrufe (populate, speichern, etc.)
+│   ├── terminology.py            # Terminologie-Logik (validate, translate)
+│   └── main.py                   # Terminal-Version des Workflows
 │
-├── fhir/                         # FHIR Logik
-│   ├── populate_q.py             # $populate Aufruf
-│   ├── post_q.py                 # Questionnaire auf HAPI hochladen
-│   ├── post_response.py          # QuestionnaireResponse speichern
-│   └── fill_q.py                 # Fragebogen manuell befüllen (Terminal)
+├── terminology/                  # Terminologie-Ressourcen (JSON)
+│   ├── code_system.json          # CodeSystem: Codes 1–6 mit Display A–F
+│   ├── buchstaben_code_system.json # Ziel-CodeSystem: Buchstaben A–F
+│   ├── value_set.json            # ValueSet: alle erlaubten Codes
+│   └── concept_map.json          # ConceptMap: Mapping 1→A, 2→B, ...
 │
 ├── questionnaires/               # FHIR Questionnaire Definitionen (JSON)
 │   ├── test01.json               # Vorname + Nachname mit FHIRPath
 │   ├── test03.json               # + Geburtsdatum, SVS-Nummer
-│   └── test04.json               # + Adresse, Ort, PLZ
+│   ├── test04.json               # + Adresse, Ort, PLZ
+│   └── test05.json               # + Kategorie-Code (Terminologie)
+│
+├── scripts/                      # Hilfsskripte
+│   └── upload_and_test.py        # Terminologie auf HAPI hochladen & testen
 │
 ├── docs/                         # Dokumentation
 │   └── sequenz_diagramm.puml     # Sequenzdiagramm des Workflows
@@ -185,7 +191,17 @@ Nach dem Start erreichbar unter:
 
 > Referenz: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
 
-### 6.3 Flask Web-App starten
+### 6.3 Terminologie hochladen
+
+Einmalig nach jedem Docker-Start müssen die Terminologie-Ressourcen hochgeladen werden:
+
+```bash
+python scripts/upload_and_test.py
+```
+
+> **Wichtig:** Da Docker keinen persistenten Speicher hat, müssen die Ressourcen nach jedem Neustart erneut hochgeladen werden – immer **vor** dem Start der Flask App.
+
+### 6.4 Flask Web-App starten
 
 ```bash
 python app/_web.py
@@ -315,7 +331,76 @@ LForms konnte aus **Sicherheitsgründen** nicht in diesen Prototyp eingebunden w
 
 ---
 
-## 10. Referenzen
+## 10. Terminologie-Server
+
+### 10.1 Überblick
+
+Zusätzlich zum Fragebogen-Workflow wurde ein eigener **Terminologie-Katalog** auf dem HAPI FHIR Server implementiert. Dieser ermöglicht es, numerische Codes automatisch auf standardisierte Buchstaben-Codes zu mappen – z.B. wird der Eingabewert `1` automatisch als `A` gespeichert.
+
+### 10.2 Verwendete FHIR-Ressourcen
+
+Für den Terminologie-Server werden drei FHIR-Ressourcen kombiniert:
+
+| Ressource | Datei | Zweck |
+|---|---|---|
+| **CodeSystem** | `code_system.json` | Definiert die Codes `1–6` mit Display-Werten `A–F` |
+| **CodeSystem** | `buchstaben_code_system.json` | Ziel-Katalog mit Codes `A–F` |
+| **ValueSet** | `value_set.json` | Gruppiert alle erlaubten Codes aus dem CodeSystem |
+| **ConceptMap** | `concept_map.json` | Definiert das Mapping `1→A`, `2→B`, ... `6→F` |
+
+### 10.3 FHIR Terminologie-Operationen
+
+Der HAPI Server stellt drei spezielle Operationen für Terminologie bereit:
+
+| Operation | Endpunkt | Beschreibung |
+|---|---|---|
+| `$lookup` | `CodeSystem/$lookup` | Schlägt einen Code nach und gibt den Display-Wert zurück |
+| `$validate-code` | `CodeSystem/$validate-code` | Prüft ob ein Code im Katalog gültig ist |
+| `$translate` | `ConceptMap/$translate` | Übersetzt einen Code via ConceptMap (z.B. `1` → `A`) |
+
+### 10.4 Ablauf im System
+
+Wenn ein Benutzer in einem Fragebogen ein kodiertes Feld (z.B. `kategorie_code`) ausfüllt und das Formular abschickt, passiert im Flask-Backend automatisch folgendes:
+
+```
+1. Eingabe: Benutzer gibt "3" ein
+
+2. $validate-code  →  Ist "3" ein gültiger Code?
+   Flask ──POST CodeSystem/$validate-code──▶ HAPI
+   HAPI  ──▶ result: true
+
+3. $translate  →  Was ist der Ziel-Code für "3"?
+   Flask ──POST ConceptMap/$translate──▶ HAPI
+   HAPI  ──▶ "C"
+
+4. Gespeichert wird "C", nicht "3"
+```
+
+### 10.5 Terminologie hochladen
+
+Vor dem ersten Start müssen die Terminologie-Ressourcen auf den HAPI Server geladen werden:
+
+```bash
+python scripts/upload_and_test.py
+```
+
+Das Skript lädt alle vier Ressourcen hoch und testet anschließend alle drei Operationen (`$lookup`, `$validate-code`, `$translate`) für die Codes `1–6`.
+
+> **Wichtig:** Die Daten im HAPI Docker-Container sind nicht persistent. Nach jedem Neustart von Docker muss `upload_and_test.py` erneut ausgeführt werden – **vor** dem Start der Flask App.
+
+### 10.6 Erweiterung
+
+Um weitere Felder als kodierte Felder zu behandeln, muss in `_web.py` nur die folgende Konstante erweitert werden:
+
+```python
+CODED_FIELDS = {"kategorie_code", "status_code", "typ_code"}
+```
+
+Alle Felder in dieser Menge werden automatisch validiert und übersetzt.
+
+---
+
+## 11. Referenzen
 
 - HAPI FHIR Server: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
 - HL7 FHIR Spezifikation: https://www.hl7.org/fhir/

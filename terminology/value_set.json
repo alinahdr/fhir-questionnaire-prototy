@@ -1,0 +1,17 @@
+{
+  "resourceType": "ValueSet",
+  "id": "nummer-buchstabe-vs",
+  "url": "http://example.org/fhir/ValueSet/nummer-buchstabe",
+  "version": "1.0",
+  "name": "NummerBuchstabeValueSet",
+  "title": "Nummer → Buchstabe ValueSet",
+  "status": "active",
+  "description": "Alle Codes aus dem Nummer-Buchstabe Katalog",
+  "compose": {
+    "include": [
+      {
+        "system": "http://example.org/fhir/CodeSystem/nummer-buchstabe"
+      }
+    ]
+  }
+}

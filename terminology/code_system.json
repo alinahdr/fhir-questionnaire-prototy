@@ -1,0 +1,20 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "nummer-buchstabe-cs",
+  "url": "http://example.org/fhir/CodeSystem/nummer-buchstabe",
+  "version": "1.0",
+  "name": "NummerBuchstabeCodeSystem",
+  "title": "Nummer → Buchstabe Katalog",
+  "status": "active",
+  "experimental": false,
+  "description": "Eigener Katalog: Numerische Codes 1-6 mit Buchstaben A-F als Display",
+  "content": "complete",
+  "concept": [
+    { "code": "1", "display": "A" },
+    { "code": "2", "display": "B" },
+    { "code": "3", "display": "C" },
+    { "code": "4", "display": "D" },
+    { "code": "5", "display": "E" },
+    { "code": "6", "display": "F" }
+  ]
+}
