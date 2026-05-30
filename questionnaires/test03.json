@@ -28,19 +28,36 @@
             "language": "text/fhirpath",
             "expression": "Patient.name.first().family"
           }
-
         }
       ]
     },
-     {
+    {
       "type": "date",
       "linkId": "birthdate",
-      "text": "Birthdate"
+      "text": "Birthdate",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "Patient.birthDate"
+          }
+        }
+      ]
     },
     {
       "type": "integer",
       "linkId": "svs_numb",
-      "text": "SVS Nummer"
+      "text": "SVS Nummer",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "Patient.identifier.first().value"
+          }
+        }
+      ]
     }
   ]
 }
